@@ -8,8 +8,31 @@ import optparse
 
 
 global configM
+global gd_client
 
 
+def add_contact_photo(pic_file):
+    photo_metadata = gd_client.ChangePhoto(pic_file, contact_entry, content_type='image/jpeg')
+
+
+def get_contact(name):
+    print "retrieve contact based on email/name"
+
+def create_contact():
+    new_contact = gdata.contacts.ContactEntry(title=atom.Title(text=name))
+    new_contact.content = atom.Content(text=notes)
+    # Create a work email address for the contact and use as primary.
+    new_contact.email.append(gdata.contacts.Email(address=primary_email,
+        primary='true', rel=gdata.contacts.REL_WORK))
+    # Add extended properties to add data which is used in your application.
+    new_contact.extended_property.append(gdata.ExtendedProperty(
+        name='favourite flower', value='daisy'))
+    sports_property = gdata.ExtendedProperty(name='sports')
+    sports_property.SetXmlBlob('<dance><salsa/><ballroom_dancing/></dance>')
+    new_contact.extended_property.append(sports_property)
+    
+    # Send the contact data to the server.
+    contact_entry = gd_client.CreateContact(new_contact)
 
 def PrintFeed(feed):
     for i, entry in enumerate(feed.entry):
@@ -54,6 +77,7 @@ def processConfig(config_file):
 
 def main():
    global configM
+   global gd_client
    configM = {} 
 
    p = optparse.OptionParser()
